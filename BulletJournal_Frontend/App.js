@@ -1,98 +1,110 @@
-// import { StatusBar } from 'expo-status-bar';
-// import { StyleSheet, Text, View } from 'react-native';
-// import TodoList from './components/to-do-list/ToDoList';
-
-
-// export default function App() {
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.todoListContainer}>
-//         <TodoList />
-//       </View>
-//       <StatusBar style="auto" />
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#fff',
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     padding: 20,
-//     marginTop:40,
-//     marginBottom: 20
-//   },
-//   title: {
-//     fontSize: 24,
-//     marginBottom: 20,
-//   },
-//   todoListContainer: {
-//     flex: 5,
-//     width: '100%',
-//   },
-// });
-
 import { StatusBar } from 'expo-status-bar';
-import React from 'react';
-import { StyleSheet, View } from 'react-native';
-// import Header from './components/Header';
-// import Footer from './components/Footer';
-import TodoList from './components/to-do-list/ToDoList';
+import React, { useState } from 'react';
+import { StyleSheet, Text, TouchableOpacity, View , ImageBackground} from 'react-native';
+import ToDoList from './components/to-do-list/ToDoList';
 import StickyNote from './components/sticky-notes/StickyNotes';
 import Journal from './components/journal/Journal';
+import Header from './components/header/Header';
 
 export default function App() {
+  const [activeComponent, setActiveComponent] = useState(null);
+
+  const handleComponentClick = (component) => {
+    setActiveComponent(component);
+  };
+
+  const renderComponent = () => {
+    switch (activeComponent) {
+      case 'To Do List':
+        return <ToDoList />;
+      case 'Journal':
+        return <Journal />;
+      case 'Sticky Note':
+        return <StickyNote />;
+      case 'Tracker':
+        // return <Tracker />;
+      default:
+        return null;
+    }
+  };
+
   return (
-    <View style={styles.container}>
-      {/* <Header /> */}
-      <View style={styles.sectionsContainer}>
-        <View style={styles.section}>
-          {/* Add your component for the first section here */}
-        </View>
-        <View style={styles.section}>
-          <Journal />
-        </View>
-        <View style={styles.section}>
-          {/* Add your component for the third section here */}
-          <TodoList />
-        </View>
-        <View style={styles.section}>
-         <StickyNote />
+    <ImageBackground
+      source={require('./assets/homepage.jpeg')}
+      style={styles.backgroundImage}
+    >
+      <View style={styles.overlay}>
+        <View style={styles.container}>
+          <View style={styles.header}>
+            <Header />
+          </View>
+          <View style={styles.content}>
+            {renderComponent() || (
+              <View style={styles.sectionsContainer}>
+                <TouchableOpacity style={styles.section} onPress={() => handleComponentClick('To Do List')}>
+                  <Text>To Do List</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.section} onPress={() => handleComponentClick('Journal')}>
+                  <Text>Journal</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.section} onPress={() => handleComponentClick('Sticky Note')}>
+                  <Text>Sticky Note</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.section} onPress={() => handleComponentClick('Tracker')}>
+                  <Text>Tracker</Text>
+                </TouchableOpacity>
+              </View>
+            )}
+          </View>
+          <StatusBar style="auto" />
         </View>
       </View>
-      {/* <Footer /> */}
-      <StatusBar style="auto" />
-    </View>
+    </ImageBackground>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+  },
+  header: {
     paddingTop: 20,
     paddingBottom: 20,
-    marginTop:40
+    alignItems: 'center',
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
   },
   sectionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'space-between',
     width: '100%',
-    height: "100%",
-    borderColor: "red",
-    borderWidth: 2
+    height: '60%',
+    borderColor: 'red',
+    borderWidth: 2,
+    padding: 10,
   },
   section: {
-    width: '48%', // Adjust width as needed, this will create a gap between sections
+    width: '48%',
     marginBottom: 10,
     marginTop: 10,
-    borderColor:"red",
-    height:"40%",
-    borderWidth: 2
+    borderColor: 'red',
+    height: 100,
+    borderWidth: 2,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'white', // Make tiles solid white
+  },
+  backgroundImage: {
+    flex: 1,
+    resizeMode: 'cover',
+    justifyContent: 'center',
+  },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust opacity as needed
   },
 });
