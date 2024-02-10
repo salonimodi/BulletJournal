@@ -1,40 +1,47 @@
-import React, { useState } from 'react';
-import { ScrollView, TouchableOpacity, StyleSheet } from 'react-native';
-import StickyNote from './StickyNote';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for the plus icon
+import React, { useState } from "react";
+import { ScrollView, StyleSheet, View, TouchableOpacity } from "react-native";
+import StickyNotes from "./StickyNotes";
+import { Ionicons } from '@expo/vector-icons';
 
 const StickyNotesContainer = () => {
-  const [notes, setNotes] = useState([{ id: 1, text: '', color: '#ffcc00' }]);
-  
-  const addNote = () => {
-    const newNote = {
-      id: Math.random(),
-      text: '',
-      color: '#ffcc00', // Default color: yellow
-    };
-    setNotes([...notes, newNote]);
-  };
+  const [notes, setNotes] = useState([{ id: 1, text: "", color: "#ffcc00" }]);
 
   const removeNote = (id) => {
     setNotes(notes.filter((note) => note.id !== id));
   };
 
+  const addNote = () => {
+    const newNote = {
+      id: Math.random(),
+      text: '',
+      color: "#ffcc00",
+    };
+    setNotes([...notes, newNote]);
+  };
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      {notes.map((note) => (
-        <StickyNote key={note.id} note={note} removeNote={removeNote} />
-      ))}
+    <View style={styles.overlay}>
+      <ScrollView contentContainerStyle={styles.container}>
+        {notes.map((note) => (
+          <StickyNotes key={note.id} note={note} removeNote={removeNote} />
+        ))}
+      </ScrollView>
       <TouchableOpacity onPress={addNote} style={styles.addButton}>
         <Ionicons name="add" size={24} color="white" />
       </TouchableOpacity>
-    </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  overlay: {
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    flex: 1,
+    width: "100%",
+  },
   container: {
-    flexGrow: 1,
     padding: 10,
+    width: "100%",
   },
   addButton: {
     position: 'absolute',

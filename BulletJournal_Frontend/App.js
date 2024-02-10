@@ -2,9 +2,9 @@ import { StatusBar } from 'expo-status-bar';
 import React, { useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View , ImageBackground} from 'react-native';
 import ToDoList from './components/to-do-list/ToDoList';
-import StickyNote from './components/sticky-notes/StickyNotes';
 import Journal from './components/journal/Journal';
 import Header from './components/header/Header';
+import StickyNotesContainer from './components/sticky-notes/StcikyNotesContainer';
 
 export default function App() {
   const [activeComponent, setActiveComponent] = useState(null);
@@ -20,7 +20,7 @@ export default function App() {
       case 'Journal':
         return <Journal />;
       case 'Sticky Note':
-        return <StickyNote />;
+        return <StickyNotesContainer />;
       case 'Tracker':
         // return <Tracker />;
       default:
