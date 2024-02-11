@@ -16,11 +16,15 @@ const styles = StyleSheet.create({
     paddingVertical: 20,
     backgroundColor: 'rgba(255, 255, 255, 0.8)', // Add a semi-transparent white background
     alignItems: 'center', // Center the text horizontally
+    borderColor: 'rgba(0, 255, 0, 0.5)',
+    borderWidth:2,
+    borderRadius: 10,
   },
   headerText: {
     fontSize: 20,
     fontWeight: "bold",
     color: '#000', // Add black color to the text
+    paddingHorizontal:20
   },
 });
 

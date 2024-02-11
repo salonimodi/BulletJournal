@@ -1,10 +1,17 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View , ImageBackground} from 'react-native';
-import ToDoList from './components/to-do-list/ToDoList';
-import Journal from './components/journal/Journal';
-import Header from './components/header/Header';
-import StickyNotesContainer from './components/sticky-notes/StcikyNotesContainer';
+import { StatusBar } from "expo-status-bar";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ImageBackground,
+} from "react-native";
+import ToDoList from "./components/to-do-list/ToDoList";
+import Header from "./components/header/Header";
+import StickyNotesContainer from "./components/sticky-notes/StcikyNotesContainer";
+import JournalEntryScreen from "./components/journalling/JournalEntryScreen"
+import Footer from "./components/footer/Footer";
 
 export default function App() {
   const [activeComponent, setActiveComponent] = useState(null);
@@ -13,16 +20,20 @@ export default function App() {
     setActiveComponent(component);
   };
 
+  const navigateToHomePage = () => {
+    setActiveComponent(null); 
+  };
+
   const renderComponent = () => {
     switch (activeComponent) {
-      case 'To Do List':
+      case "To Do List":
         return <ToDoList />;
-      case 'Journal':
-        return <Journal />;
-      case 'Sticky Note':
+      case "Journal":
+        return <JournalEntryScreen/>
+      case "Sticky Note":
         return <StickyNotesContainer />;
-      case 'Tracker':
-        // return <Tracker />;
+      case "Tracker":
+      // return <Tracker />;
       default:
         return null;
     }
@@ -30,7 +41,7 @@ export default function App() {
 
   return (
     <ImageBackground
-      source={require('./assets/homepage.jpeg')}
+      source={require("./assets/homepage.jpeg")}
       style={styles.backgroundImage}
     >
       <View style={styles.overlay}>
@@ -41,20 +52,35 @@ export default function App() {
           <View style={styles.content}>
             {renderComponent() || (
               <View style={styles.sectionsContainer}>
-                <TouchableOpacity style={styles.section} onPress={() => handleComponentClick('To Do List')}>
-                  <Text>To Do List</Text>
+                <TouchableOpacity
+                  style={styles.section}
+                  onPress={() => handleComponentClick("To Do List")}
+                >
+                  <Text style={styles.sectionText}>To Do List</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.section} onPress={() => handleComponentClick('Journal')}>
-                  <Text>Journal</Text>
+                <TouchableOpacity
+                  style={styles.section}
+                  onPress={() => handleComponentClick("Journal")}
+                >
+                  <Text style={styles.sectionText}>Journal</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.section} onPress={() => handleComponentClick('Sticky Note')}>
-                  <Text>Sticky Note</Text>
+                <TouchableOpacity
+                  style={styles.section}
+                  onPress={() => handleComponentClick("Sticky Note")}
+                >
+                  <Text style={styles.sectionText}>Sticky Note</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style={styles.section} onPress={() => handleComponentClick('Tracker')}>
-                  <Text>Tracker</Text>
+                <TouchableOpacity
+                  style={styles.section}
+                  onPress={() => handleComponentClick("Tracker")}
+                >
+                  <Text style={styles.sectionText}>Tracker</Text>
                 </TouchableOpacity>
               </View>
             )}
+          </View>
+          <View style={styles.footer}>
+          <Footer onPress={navigateToHomePage} isHomePage={true}/>
           </View>
           <StatusBar style="auto" />
         </View>
@@ -68,43 +94,51 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    paddingTop: 20,
+    paddingTop: 50,
     paddingBottom: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center'
+    justifyContent: "center",
+    alignItems: "center",
   },
   sectionsContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'space-between',
-    width: '100%',
-    height: '60%',
-    borderColor: 'red',
-    borderWidth: 2,
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-evenly",
+    width: "100%",
+    height: "60%",
     padding: 10,
   },
   section: {
-    width: '48%',
-    marginBottom: 10,
-    marginTop: 10,
-    borderColor: 'red',
-    height: 100,
+    width: "45%",
+    margin: 5,
+    height: 120,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
     borderWidth: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'white', // Make tiles solid white
+    borderColor: "rgba(0, 255, 0, 0.5)",
+  },
+  sectionText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
   },
   backgroundImage: {
     flex: 1,
-    resizeMode: 'cover',
-    justifyContent: 'center',
+    resizeMode: "cover",
+    justifyContent: "center",
   },
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust opacity as needed
+    backgroundColor: "rgba(0, 0, 0, 0.3)",
   },
+  footer: {
+    paddingTop: 50,
+    paddingBottom: 20,
+    alignItems: "center",
+  }
 });
