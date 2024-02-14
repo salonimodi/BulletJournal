@@ -12,6 +12,8 @@ import Header from "./components/header/Header";
 import StickyNotesContainer from "./components/sticky-notes/StcikyNotesContainer";
 import JournalEntryScreen from "./components/journalling/JournalEntryScreen"
 import Footer from "./components/footer/Footer";
+import TrackerTemplate from "./components/tracker-template/Tracker";
+import CalendarScreen from "./components/tracking/CalenderScreen";
 
 export default function App() {
   const [activeComponent, setActiveComponent] = useState(null);
@@ -33,7 +35,8 @@ export default function App() {
       case "Sticky Note":
         return <StickyNotesContainer />;
       case "Tracker":
-      // return <Tracker />;
+      // return <TrackerTemplate />;
+      return <CalendarScreen/>
       default:
         return null;
     }
