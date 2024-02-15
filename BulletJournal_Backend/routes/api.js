@@ -26,9 +26,11 @@ router.post("/register", (req, res) => {
       let payload = {subject: registeredUser.id}
       let token = jwt.sign(payload, "secretkey")
       res.status(200).send({token});
+      console.log("Success regiter")
     })
     .catch((err) => {
       res.status(400).send(err);
+      console.log("error in req")
     });
 });
 
@@ -45,6 +47,7 @@ router.post("/login", (req, res) => {
           let payload = {subject: user.id}
           let token = jwt.sign(payload, "secretkey")
           res.status(200).send({token});
+          console.log("login success")
         }
       }
     })

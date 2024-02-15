@@ -144,7 +144,7 @@ import { View, TextInput, Button, StyleSheet } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 
-const JournalEntryScreen = ({ onSave }) => {
+const TrackerTemplate = ({ onSave }) => {
   const [entry, setEntry] = useState('');
   const [selectedDate, setSelectedDate] = useState(new Date());
 
@@ -198,5 +198,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export default JournalEntryScreen;
+export default TrackerTemplate;
 
