@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken')
 const Users = require('../models/user');
+const Todo = require('../models/todo')
 
 const router = express.Router();
 const url =
@@ -87,11 +88,12 @@ router.get("/todos", authenticateUser, (req, res) => {
 
 // Add a new todo
 router.post("/todos", authenticateUser, (req, res) => {
-  const { title, description } = req.body;
+  const { description, completed }  = req.body;
+  console.log(req.body)
   const newTodo = new Todo({
     userId: req.userId,
-    title,
-    description
+    description: description,
+    completed: completed
   });
   newTodo.save()
     .then(todo => {
@@ -121,6 +123,7 @@ router.put("/todos/:id", authenticateUser, (req, res) => {
 
 // Delete a todo
 router.delete("/todos/:id", authenticateUser, (req, res) => {
+  console.log(req)
   const { id } = req.params;
   Todo.findByIdAndDelete(id)
     .then(todo => {

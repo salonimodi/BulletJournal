@@ -14,8 +14,9 @@ import JournalEntryScreen from "../components/journalling/JournalEntryScreen"
 import Footer from "../components/footer/Footer";
 import TrackerTemplate from "../components/tracker-template/Tracker";
 
-const MainScreen = () => {
+const MainScreen = ({navigation, route }) => {
   const [activeComponent, setActiveComponent] = useState(null);
+  const { token } = route.params;
 
   const handleComponentClick = (component) => {
     setActiveComponent(component);
@@ -28,7 +29,7 @@ const MainScreen = () => {
   const renderComponent = () => {
     switch (activeComponent) {
       case "To Do List":
-        return <ToDoList />;
+        return <ToDoList token={token}/>;
       case "Journal":
         return <JournalEntryScreen/>
       case "Sticky Note":
@@ -48,7 +49,7 @@ const MainScreen = () => {
       <View style={styles.overlay}>
         <View style={styles.container}>
           <View style={styles.header}>
-            <Header />
+            <Header navigation={navigation} />
           </View>
           <View style={styles.content}>
             {renderComponent() || (

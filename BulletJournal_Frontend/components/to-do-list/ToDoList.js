@@ -1,52 +1,119 @@
-import React, { useState } from "react";
-import { View, Text, TextInput, TouchableOpacity, FlatList, StyleSheet } from "react-native";
-import Checkbox from 'expo-checkbox';
-import { Feather } from '@expo/vector-icons';
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  FlatList,
+  StyleSheet,
+} from "react-native";
+import Checkbox from "expo-checkbox";
+import { Feather } from "@expo/vector-icons";
+import axios from "axios";
 
+const BASE_URL = "http://192.168.1.41:3000/api";
 
-const TodoList = () => {
+const TodoList = ({ token }) => {
   const [tasks, setTasks] = useState([]);
   const [newTask, setNewTask] = useState("");
 
+  useEffect(() => {
+    fetchTasks();
+  }, []);
+
+  const fetchTasks = () => {
+    axios
+      .get(`http://192.168.1.41:3000/api/todos`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
+      .then((response) => {
+        setTasks(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching tasks from the backend:", error);
+      });
+  };
+
   const addTask = () => {
     if (newTask.trim() !== "") {
-      setTasks([...tasks, { id: Date.now(), text: newTask, completed: false }]);
-      setNewTask("");
+      axios
+        .post(
+          `${BASE_URL}/todos`,
+          { description: newTask, completed: false },
+          {
+            headers: {
+              Authorization: `${token}`,
+            },
+          }
+        )
+        .then((response) => {
+          setTasks([...tasks, response.data]);
+          setNewTask("");
+        })
+        .catch((error) => {
+          console.error("Error adding task on the backend:", error);
+        });
     }
   };
 
   const toggleTask = (taskId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
+    axios
+      .put(
+        `${BASE_URL}/todos/${taskId}`,
+        { completed: !tasks.find((task) => task._id === taskId).completed },
+        {
+          headers: {
+            Authorization: `${token}`,
+          },
+        }
       )
-    );
+      .then((response) => {
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task._id === taskId ? { ...task, completed: !task.completed } : task
+          )
+        );
+      })
+      .catch((error) => {
+        console.error("Error updating task status on the backend:", error);
+      });
   };
 
   const deleteTask = (taskId) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
+    axios
+      .delete(`${BASE_URL}/todos/${taskId}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      })
+      .then((response) => {
+        setTasks((prevTasks) =>
+          prevTasks.filter((task) => task._id !== taskId)
+        );
+      })
+      .catch((error) => {
+        console.error("Error deleting task on the backend:", error);
+      });
   };
 
   const renderItem = ({ item }) => (
     <View style={styles.taskContainer}>
-      <Checkbox
-        value={item.completed}
-        onValueChange={() => toggleTask(item.id)}
-      />
+      <Checkbox value={item.completed} onValueChange={() => toggleTask(item._id)} />
       <Text
         style={{
           marginLeft: 10,
           textDecorationLine: item.completed ? "line-through" : "none",
-          flex: 1
+          flex: 1,
         }}
       >
-        {item.text}
+        {item.description}
       </Text>
       <TouchableOpacity
-        onPress={() => deleteTask(item.id)}
+        onPress={() => deleteTask(item._id)}
         style={{ marginLeft: "auto" }}
       >
-        {/* <Text style={styles.deleteButton}>Delete</Text> */}
         <Feather name="trash-2" size={24} color="black" />
       </TouchableOpacity>
     </View>
@@ -59,15 +126,15 @@ const TodoList = () => {
           style={styles.input}
           placeholder="Enter a new task"
           value={newTask}
-          onChangeText={(text) => setNewTask(text)}
+          onChangeText={(description) => setNewTask(description)}
         />
         <TouchableOpacity style={styles.addButton} onPress={addTask}>
           <Text style={styles.addButtonText}>Add Task</Text>
         </TouchableOpacity>
-        <FlatList 
+        <FlatList
           data={tasks}
           renderItem={renderItem}
-          keyExtractor={(item) => item.id.toString()}
+          keyExtractor={(item) => item?.id?.toString()}
           contentContainerStyle={styles.listContainer}
         />
       </View>
@@ -77,35 +144,34 @@ const TodoList = () => {
 
 const styles = StyleSheet.create({
   overlay: {
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
     flex: 1,
-    width: '100%'
+    width: "100%",
   },
   container: {
     flex: 1,
-    padding: 20
-
+    padding: 20,
   },
   input: {
     height: 40,
-    borderColor: 'gray',
+    borderColor: "gray",
     borderWidth: 1,
     marginBottom: 10,
     paddingHorizontal: 10,
-    width: '100%'
+    width: "100%",
   },
   addButton: {
-    backgroundColor: 'blue',
+    backgroundColor: "blue",
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
     borderRadius: 5,
     marginBottom: 10,
-    width: '100%'
+    width: "100%",
   },
   addButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    width: '100%'
+    color: "white",
+    fontWeight: "bold",
+    width: "100%",
   },
   taskContainer: {
     width: "100%",
@@ -116,17 +182,16 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   completedTask: {
-    textDecorationLine: 'line-through',
-    color: 'gray',
+    textDecorationLine: "line-through",
+    color: "gray",
   },
   deleteButton: {
     color: "red",
-    marginLeft: 'auto',
+    marginLeft: "auto",
   },
   listContainer: {
     flexGrow: 1,
-    
-  }
+  },
 });
 
 export default TodoList;

@@ -1,10 +1,18 @@
 import React from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-const Header = () => {
+const Header = ({ navigation }) => {
+  const handleLogout = () => {
+    navigation.navigate("Login");
+  };
   return (
     <View style={styles.headerContainer}>
       <Text style={styles.headerText}>Your Personal Planner</Text>
+      <View>
+      <TouchableOpacity onPress={handleLogout}>
+        <Text style={styles.logoutText}>Logout</Text>
+      </TouchableOpacity>
+      </View>
     </View>
   );
 };
@@ -25,6 +33,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: '#000', // Add black color to the text
     paddingHorizontal:20
+  },
+  logoutText: {
+    fontSize: 16,
+    color: "#008080",
+    fontWeight: "bold",
   },
 });
 

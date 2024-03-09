@@ -1,76 +1,3 @@
-// import React, { useState } from "react";
-// import { View, TextInput, Button, StyleSheet, Alert } from "react-native";
-// import axios from "axios";
-
-// const BASE_URL = "http://192.168.1.41:3000/api";
-
-// const LoginScreen = ({ navigation }) => {
-//   const [email, setEmail] = useState("");
-//   const [password, setPassword] = useState("");
-
-//   const handleLogin = async () => {
-//     try {
-//       const response = await axios.post(`${BASE_URL}/login`, { email, password });
-//       const { token } = response.data;
-//       onLogin();
-//     } catch (error) {
-//       Alert.alert("Error", "Invalid email or password");
-//     }
-//   };
-
-//   // return (
-//   //   <View style={styles.container}>
-//   //     <TextInput
-//   //       placeholder="Email"
-//   //       value={email}
-//   //       onChangeText={(text) => setEmail(text)}
-//   //       style={styles.input}
-//   //     />
-//   //     <TextInput
-//   //       placeholder="Password"
-//   //       value={password}
-//   //       onChangeText={(text) => setPassword(text)}
-//   //       secureTextEntry
-//   //       style={styles.input}
-//   //     />
-//   //     <Button title="Login" onPress={handleLogin} />
-//   //   </View>
-//   // );
-
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Login</Text>
-//       <TextInput placeholder="email/Email" />
-//       <TextInput placeholder="Password" secureTextEntry={true} />
-//       <TouchableOpacity onPress={() => navigation.navigate('Home')}>
-//         <Text>Login</Text>
-//       </TouchableOpacity>
-//       <TouchableOpacity onPress={() => navigation.navigate('Register')}>
-//         <Text>Don't have an account yet? Register Here</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
-//   input: {
-//     width: "80%",
-//     borderWidth: 1,
-//     borderColor: "#ccc",
-//     borderRadius: 5,
-//     padding: 10,
-//     marginBottom: 10,
-//   },
-// });
-
-// export default LoginScreen;
-
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet } from 'react-native';
 
@@ -98,9 +25,7 @@ export default function LoginScreen({ navigation }) {
     })
     .then(response => response.json())
     .then(data => {
-      console.log(data);
-      Alert.alert('Login successful');
-      navigation.navigate('MainScreen');
+      navigation.navigate('MainScreen', {token: data?.token});
     })
     .catch(error => {
       console.error('Error:', error);
