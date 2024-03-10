@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
 import { View, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // Import Ionicons for the plus icon
+import { Ionicons } from '@expo/vector-icons';
 
-const StickyNotes = ({ note, removeNote }) => {
-  const [noteText, setNoteText] = useState(note.text);
+const StickyNotes = ({ note, removeNote, updateNote}) => {
+  const [noteText, setNoteText] = useState(note.content);
   const [noteColor, setNoteColor] = useState(note.color);
 
   const handleColorChange = (color) => {
     setNoteColor(color);
+    updateNote({ ...note, color });
   };
 
   const handleTextChange = (text) => {
     setNoteText(text);
+    updateNote({ ...note, content: text });
   };
 
   return (
@@ -37,7 +39,7 @@ const StickyNotes = ({ note, removeNote }) => {
           onPress={() => handleColorChange('#66cc99')}
         />
       </View>
-      <TouchableOpacity onPress={() => removeNote(note.id)} style={styles.deleteButton}>
+      <TouchableOpacity onPress={() => removeNote(note._id)} style={styles.deleteButton}>
         <Ionicons name="close" size={24} color="white" />
       </TouchableOpacity>
     </View>

@@ -3,6 +3,8 @@ const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken')
 const Users = require('../models/user');
 const Todo = require('../models/todo')
+const StickyNote = require('../models/stickyNotes')
+const Journal = require('../models/journalEntry')
 
 const router = express.Router();
 const url =
@@ -15,7 +17,6 @@ mongoose.connect(url).then(() => {
 router.get("/", (req, res) => {
   res.send("From API Route");
 });
-
 
 //  User APIs
 router.post("/register", (req, res) => {
@@ -58,7 +59,6 @@ router.post("/login", (req, res) => {
     });
 });
 
-
 // To Do APIs
 const authenticateUser = (req, res, next) => {
   const token = req.headers.authorization;
@@ -89,7 +89,6 @@ router.get("/todos", authenticateUser, (req, res) => {
 // Add a new todo
 router.post("/todos", authenticateUser, (req, res) => {
   const { description, completed }  = req.body;
-  console.log(req.body)
   const newTodo = new Todo({
     userId: req.userId,
     description: description,
@@ -123,7 +122,6 @@ router.put("/todos/:id", authenticateUser, (req, res) => {
 
 // Delete a todo
 router.delete("/todos/:id", authenticateUser, (req, res) => {
-  console.log(req)
   const { id } = req.params;
   Todo.findByIdAndDelete(id)
     .then(todo => {
@@ -137,8 +135,6 @@ router.delete("/todos/:id", authenticateUser, (req, res) => {
       res.status(400).send("Error deleting todo");
     });
 });
-
-
 
 // Sticky Notes
 router.get("/sticky-notes", authenticateUser, (req, res) => {
@@ -205,8 +201,6 @@ router.delete("/sticky-notes/:id", authenticateUser, (req, res) => {
 
 
 // Journal APIs
-
-
 // Get journals for a specific user and date
 router.get("/journals/:date", authenticateUser, (req, res) => {
   const { date } = req.params;
@@ -221,55 +215,105 @@ router.get("/journals/:date", authenticateUser, (req, res) => {
 });
 
 // Add a new journal entry for a specific date
+// router.post("/journals/:date", authenticateUser, (req, res) => {
+//   const { date } = req.params;
+//   const { content } = req.body;
+//   const newJournal = new Journal({
+//     userId: req.userId,
+//     date: new Date(date),
+//     content,
+//   });
+//   newJournal.save()
+//     .then(journal => {
+//       res.status(201).json(journal);
+//     })
+//     .catch(error => {
+//       console.error(error);
+//       res.status(400).send("Error adding journal entry");
+//     });
+// });
+
+// router.post("/journals/:date", authenticateUser, (req, res) => {
+//   const { date } = req.params;
+//   const { content } = req.body;
+  
+//   Journal.findOneAndUpdate(
+//     { userId: req.userId, date },
+//     { userId: req.userId, date, content },
+//     { upsert: true, new: true }
+//   )
+//   .then(journal => {
+//     res.status(201).json(journal);
+//   })
+//   .catch(error => {
+//     console.error(error);
+//     res.status(400).send("Error adding or updating journal entry");
+//   });
+// });
+
+// Add or update a journal entry for a specific date
 router.post("/journals/:date", authenticateUser, (req, res) => {
   const { date } = req.params;
   const { content } = req.body;
-  const newJournal = new Journal({
-    userId: req.userId,
-    date,
-    content,
-  });
-  newJournal.save()
-    .then(journal => {
+
+  // Check if a journal entry exists for the given date
+  Journal.findOne({ userId: req.userId, date })
+    .then((existingJournal) => {
+      if (existingJournal) {
+        // If an entry exists, update its content
+        existingJournal.content = content;
+        return existingJournal.save();
+      } else {
+        // If no entry exists, create a new one
+        const newJournal = new Journal({
+          userId: req.userId,
+          date,
+          content,
+        });
+        return newJournal.save();
+      }
+    })
+    .then((journal) => {
       res.status(201).json(journal);
     })
-    .catch(error => {
+    .catch((error) => {
       console.error(error);
-      res.status(400).send("Error adding journal entry");
+      res.status(400).send("Error adding or updating journal entry");
     });
 });
+
 
 // Update a journal entry for a specific date
-router.put("/journals/:id", authenticateUser, (req, res) => {
-  const { id } = req.params;
-  Journal.findByIdAndUpdate(id, req.body, { new: true })
-    .then(journal => {
-      if (!journal) {
-        return res.status(404).send('Journal entry not found');
-      }
-      res.status(200).json(journal);
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(400).send("Error updating journal entry");
-    });
-});
+// router.put("/journals/:id", authenticateUser, (req, res) => {
+//   const { id } = req.params;
+//   Journal.findByIdAndUpdate(id, req.body, { new: true })
+//     .then(journal => {
+//       if (!journal) {
+//         return res.status(404).send('Journal entry not found');
+//       }
+//       res.status(200).json(journal);
+//     })
+//     .catch(error => {
+//       console.error(error);
+//       res.status(400).send("Error updating journal entry");
+//     });
+// });
 
-// Delete a journal entry
-router.delete("/journals/:id", authenticateUser, (req, res) => {
-  const { id } = req.params;
-  Journal.findByIdAndDelete(id)
-    .then(journal => {
-      if (!journal) {
-        return res.status(404).send('Journal entry not found');
-      }
-      res.status(200).json(journal);
-    })
-    .catch(error => {
-      console.error(error);
-      res.status(400).send("Error deleting journal entry");
-    });
-});
+// // Delete a journal entry
+// router.delete("/journals/:id", authenticateUser, (req, res) => {
+//   const { id } = req.params;
+//   Journal.findByIdAndDelete(id)
+//     .then(journal => {
+//       if (!journal) {
+//         return res.status(404).send('Journal entry not found');
+//       }
+//       res.status(200).json(journal);
+//     })
+//     .catch(error => {
+//       console.error(error);
+//       res.status(400).send("Error deleting journal entry");
+//     });
+// });
 
 //  Tracker APIs
 module.exports = router;

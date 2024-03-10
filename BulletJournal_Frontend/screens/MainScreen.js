@@ -31,11 +31,11 @@ const MainScreen = ({navigation, route }) => {
       case "To Do List":
         return <ToDoList token={token}/>;
       case "Journal":
-        return <JournalEntryScreen/>
+        return <JournalEntryScreen token={token}/>
       case "Sticky Note":
-        return <StickyNotesContainer />;
+        return <StickyNotesContainer token={token}/>;
       case "Tracker":
-        return <TrackerTemplate />;
+        return <TrackerTemplate token={token}/>;
       default:
         return null;
     }
