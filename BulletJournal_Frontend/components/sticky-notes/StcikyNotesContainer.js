@@ -83,7 +83,7 @@ const StickyNotesContainer = ({ token }) => {
     <View style={styles.overlay}>
       <ScrollView contentContainerStyle={styles.container}>
         {notes.map((note) => (
-          <StickyNotes key={note._id} note={note} removeNote={removeNote} updateNote={updateNote}/>
+          <StickyNotes key={note.position} note={note} removeNote={removeNote} updateNote={updateNote}/>
         ))}
       </ScrollView>
       <TouchableOpacity onPress={addNote} style={styles.addButton}>

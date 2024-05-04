@@ -5,6 +5,8 @@ const Users = require('../models/user');
 const Todo = require('../models/todo')
 const StickyNote = require('../models/stickyNotes')
 const Journal = require('../models/journalEntry')
+const Tracker = require('../models/tracker')
+const TrackerEntry = require('../models/trackerEntry')
 
 const router = express.Router();
 const url =
@@ -214,42 +216,6 @@ router.get("/journals/:date", authenticateUser, (req, res) => {
     });
 });
 
-// Add a new journal entry for a specific date
-// router.post("/journals/:date", authenticateUser, (req, res) => {
-//   const { date } = req.params;
-//   const { content } = req.body;
-//   const newJournal = new Journal({
-//     userId: req.userId,
-//     date: new Date(date),
-//     content,
-//   });
-//   newJournal.save()
-//     .then(journal => {
-//       res.status(201).json(journal);
-//     })
-//     .catch(error => {
-//       console.error(error);
-//       res.status(400).send("Error adding journal entry");
-//     });
-// });
-
-// router.post("/journals/:date", authenticateUser, (req, res) => {
-//   const { date } = req.params;
-//   const { content } = req.body;
-  
-//   Journal.findOneAndUpdate(
-//     { userId: req.userId, date },
-//     { userId: req.userId, date, content },
-//     { upsert: true, new: true }
-//   )
-//   .then(journal => {
-//     res.status(201).json(journal);
-//   })
-//   .catch(error => {
-//     console.error(error);
-//     res.status(400).send("Error adding or updating journal entry");
-//   });
-// });
 
 // Add or update a journal entry for a specific date
 router.post("/journals/:date", authenticateUser, (req, res) => {
@@ -282,39 +248,84 @@ router.post("/journals/:date", authenticateUser, (req, res) => {
     });
 });
 
+router.post('/tracker/add', authenticateUser, async (req, res) => {
+  try {
+    const { trackerName, frequency, selectedDay, selectedDate } = req.body;
+    const userId = req.userId;
+    const tracker = new Tracker({
+      userId,
+      trackerName,
+      frequency,
+      selectedDay,
+      selectedDate
+    });
+    await tracker.save();
+    res.status(201).json({ message: 'Tracker added successfully' });
+  } catch (error) {
+    console.error('Error adding tracker:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
-// Update a journal entry for a specific date
-// router.put("/journals/:id", authenticateUser, (req, res) => {
-//   const { id } = req.params;
-//   Journal.findByIdAndUpdate(id, req.body, { new: true })
-//     .then(journal => {
-//       if (!journal) {
-//         return res.status(404).send('Journal entry not found');
-//       }
-//       res.status(200).json(journal);
-//     })
-//     .catch(error => {
-//       console.error(error);
-//       res.status(400).send("Error updating journal entry");
-//     });
-// });
 
-// // Delete a journal entry
-// router.delete("/journals/:id", authenticateUser, (req, res) => {
-//   const { id } = req.params;
-//   Journal.findByIdAndDelete(id)
-//     .then(journal => {
-//       if (!journal) {
-//         return res.status(404).send('Journal entry not found');
-//       }
-//       res.status(200).json(journal);
-//     })
-//     .catch(error => {
-//       console.error(error);
-//       res.status(400).send("Error deleting journal entry");
-//     });
-// });
+router.get('/tracker', authenticateUser, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const trackers = await Tracker.find({ userId });
+    res.status(200).json({ trackers });
+  } catch (error) {
+    console.error('Failed to fetch trackers:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
 
-//  Tracker APIs
+
+router.post('/tracker/save', authenticateUser, async (req, res) => {
+  try {
+    const { data, date } = req.body;
+    const userId = req.userId;
+
+    let existingTrackerEntry = await TrackerEntry.findOne({ userId, date });
+
+    if (existingTrackerEntry) {
+      existingTrackerEntry.data = data;
+      await existingTrackerEntry.save();
+    } else {
+      const newTrackerEntry = new TrackerEntry({
+        userId,
+        data,
+        date
+      });
+      await newTrackerEntry.save();
+    }
+
+    res.status(201).json({ message: 'Tracking data saved successfully' });
+  } catch (error) {
+    console.error('Error saving tracking data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+router.get('/tracker/fetch/:date', authenticateUser, async (req, res) => {
+  try {
+    const userId = req.userId;
+    const date = new Date(req.params.date);
+
+    const trackerEntries = await TrackerEntry.find({ userId, date });
+    console.log(trackerEntries)
+    const formattedTrackerEntries = trackerEntries.map(entry => ({
+      trackerId: entry.data[0].trackerId,
+      isChecked: entry.data[0].isChecked, 
+      value: entry.data[0].value 
+    }));
+
+    res.status(200).json({ trackerEntries: formattedTrackerEntries });
+  } catch (error) {
+    console.error('Failed to fetch tracking data:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 module.exports = router;
 

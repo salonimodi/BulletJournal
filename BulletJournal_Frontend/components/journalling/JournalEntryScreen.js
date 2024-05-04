@@ -7,13 +7,7 @@ const JournalEntryScreen = ({ token }) => {
   const [entry, setEntry] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // const saveEntry = () => {
-  //   onSave({ entry, selectedDate });
-  //   setEntry('');
-  // };
-
   useEffect(() => {
-    // Fetch journal entry for the selected date
     fetchJournalEntry(selectedDate);
   }, [selectedDate]);
 
@@ -54,8 +48,6 @@ const JournalEntryScreen = ({ token }) => {
         }
       )
       .then((response) => {
-        // onSave(response.data);
-        // setEntry("");
       })
       .catch((error) => {
         console.error("Error saving journal entry:", error);
@@ -63,7 +55,6 @@ const JournalEntryScreen = ({ token }) => {
   };
 
   return (
-    <View style={styles.overlay}>
       <View style={styles.container}>
         <DateTimePicker
           value={selectedDate}
@@ -81,7 +72,6 @@ const JournalEntryScreen = ({ token }) => {
         />
         <Button title="Save Entry" onPress={saveEntry} />
       </View>
-    </View>
   );
 };
 
@@ -91,6 +81,9 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     padding: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    flex: 1,
+    width: "100%",
   },
   input: {
     width: "100%",
@@ -99,11 +92,6 @@ const styles = StyleSheet.create({
     borderColor: "#ccc",
     marginBottom: 20,
     padding: 10,
-  },
-  overlay: {
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    flex: 1,
-    width: "100%",
   },
 });
 

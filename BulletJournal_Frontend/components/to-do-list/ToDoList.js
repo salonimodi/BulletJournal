@@ -120,7 +120,6 @@ const TodoList = ({ token }) => {
   );
 
   return (
-    <View style={styles.overlay}>
       <View style={styles.container}>
         <TextInput
           style={styles.input}
@@ -134,23 +133,20 @@ const TodoList = ({ token }) => {
         <FlatList
           data={tasks}
           renderItem={renderItem}
-          keyExtractor={(item) => item?.id?.toString()}
+          key = {(item) => item?.id?.toString()}
           contentContainerStyle={styles.listContainer}
         />
       </View>
-    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  overlay: {
-    backgroundColor: "rgba(255, 255, 255, 0.8)",
-    flex: 1,
-    width: "100%",
-  },
   container: {
     flex: 1,
     padding: 20,
+    backgroundColor: "rgba(255, 255, 255, 0.8)",
+    flex: 1,
+    width: "100%",
   },
   input: {
     height: 40,

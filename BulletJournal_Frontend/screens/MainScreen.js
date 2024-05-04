@@ -12,7 +12,7 @@ import Header from "../components/header/Header";
 import StickyNotesContainer from "../components/sticky-notes/StcikyNotesContainer";
 import JournalEntryScreen from "../components/journalling/JournalEntryScreen"
 import Footer from "../components/footer/Footer";
-import TrackerTemplate from "../components/tracker-template/Tracker";
+import TrackerHomePage from "../components/tracker-template/TrackerHomePage";
 
 const MainScreen = ({navigation, route }) => {
   const [activeComponent, setActiveComponent] = useState(null);
@@ -35,7 +35,7 @@ const MainScreen = ({navigation, route }) => {
       case "Sticky Note":
         return <StickyNotesContainer token={token}/>;
       case "Tracker":
-        return <TrackerTemplate token={token}/>;
+        return <TrackerHomePage token={token}/>;
       default:
         return null;
     }
