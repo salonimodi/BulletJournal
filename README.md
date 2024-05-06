@@ -4,7 +4,7 @@
 
 <img width="250" height="500" alt="image" src="https://github.com/salonimodi/BulletJournal/assets/32274053/31217c16-5912-45d3-82f5-905ff977d638">
 
-![image](https://github.com/salonimodi/BulletJournal/assets/32274053/cf1b8d8f-fe1c-4670-831c-33ceb3ac9842)
+<img width="250" height="500" alt="image" src="https://github.com/salonimodi/BulletJournal/assets/32274053/f0c861a4-78cc-43bf-a15d-b6b0e29548b7">
 
 <img width="250" height="500" alt="image" src="https://github.com/salonimodi/BulletJournal/assets/32274053/78b48f88-e881-4bfe-bd7d-30f0fd697ecf">
 
