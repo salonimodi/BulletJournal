@@ -1,6 +1,6 @@
 # BulletJournal
 
-<img width="320" alt="image" src="https://github.com/salonimodi/BulletJournal/assets/32274053/18034ed7-87c8-41a7-906e-2362ecd8ab58">
+<img width="250" height="400" alt="image" src="https://github.com/salonimodi/BulletJournal/assets/32274053/18034ed7-87c8-41a7-906e-2362ecd8ab58">
 
 <img width="327" alt="image" src="https://github.com/salonimodi/BulletJournal/assets/32274053/31217c16-5912-45d3-82f5-905ff977d638">
 
